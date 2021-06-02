@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package oray;
+
+service OrayAuthServices {
+    rpc Login (AuthPayload) returns (AuthToken) {};
+}
+
+service OrayNetworkServices {
+    rpc ListNetworks (Empty) returns (stream Network) {};
+    rpc NetworkState (NetworkIdParam) returns (NetworkState) {}
+}
+
+message AuthPayload {
+    string username = 1;
+    string password = 2;
+}
+
+message AuthToken {
+    string token = 3;
+}
+
+message NetworkIdParam {
+    int32 id = 26;
+}
+
+message Network {
+    int32 network_id = 10;
+    string name = 11;
+    int32 serial_number = 12;
+    int32 type = 13;
+    int32 user_id = 14;
+    string version = 15;
+    bool is_delete = 16;
+    bool is_default = 17;
+    string line = 18;
+    string line_name = 19;
+    int32 router_num = 20;
+    int32 client_num = 21;
+    int32 server_num = 22;
+    int32 bypass_num = 23;
+    int32 speed = 24;
+    bool intelligent_link = 25;
+}
+
+message NetworkState {
+    int32 client = 27;
+    int32 server = 28;
+    int32 router = 29;
+}
+
+message Empty {}
