@@ -2,13 +2,20 @@ syntax = "proto3";
 
 package oray;
 
-service OrayAuthServices {
+service OrayAuthService {
     rpc Login (AuthPayload) returns (AuthToken) {};
 }
 
-service OrayNetworkServices {
-    rpc ListNetworks (Empty) returns (stream Network) {};
-    rpc NetworkState (NetworkIdParam) returns (NetworkState) {}
+service OrayNetworkService {
+    rpc CreateNetwork(Empty) returns (Empty);
+    rpc ListNetworks (Empty) returns (stream Network);
+    rpc GetNetworkInfo (Empty) returns (Empty);
+    rpc NetworkState (NetworkIdParam) returns (NetworkState);
+    rpc ListMembersInNetwork (Empty) returns (Empty);
+    rpc ListAllMembers (Empty) returns (Empty);
+    rpc ListDevices (Empty) returns (Empty);
+    rpc RemoveMember (Empty) returns (Empty);
+    rpc AddMember (Empty) returns (Empty);
 }
 
 message AuthPayload {
@@ -47,6 +54,10 @@ message NetworkState {
     int32 client = 27;
     int32 server = 28;
     int32 router = 29;
+}
+
+message User {
+    string id = 10;
 }
 
 message Empty {}

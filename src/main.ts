@@ -8,7 +8,8 @@ async function bootstrap() {
     transport: Transport.GRPC,
     options: {
       package: 'oray',
-      protoPath: join(__dirname, 'proto/oray.proto')
+      url: '0.0.0.0:5000',
+      protoPath: join(__dirname, './proto/oray.proto'),
     }
   });
   await app.listen(() => console.log(`Oray microservice listening`));
