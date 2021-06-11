@@ -9,17 +9,18 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const etcdService = app.get(EtcdService);
-  Object.keys(Config).forEach(key => etcdService.watch(key).subscribe(value => console.log(value)))
+  Object.keys(Config).forEach(key => etcdService.watch(key).subscribe(value => Config[key] = value));
 
-  // app.connectMicroservice<MicroserviceOptions>({
-  //   transport: Transport.GRPC,
-  //   options: {
-  //     package: 'oray',
-  //     url: '0.0.0.0:5000',
-  //     protoPath: join(__dirname, './proto/oray.proto'),
-  //   }
-  // })
-  // await app.startAllMicroservicesAsync();
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.GRPC,
+    options: {
+      package: 'oray',
+      url: '0.0.0.0:5000',
+      protoPath: join(__dirname, './proto/oray.proto'),
+    }
+  });
+
+  await app.startAllMicroservicesAsync();
   await app.listen(3000);
 
 
