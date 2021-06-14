@@ -1,21 +1,38 @@
 import {Controller} from '@nestjs/common';
 import {GrpcMethod} from '@nestjs/microservices';
 import {NetworkService} from './network.service';
+import {AuthService} from '../auth/auth.service';
+import {Config} from '../config';
+import {mergeMap} from 'rxjs/operators';
+
+const {
+    ORAY_USERNAME, ORAY_PASSWORD
+} = Config;
 
 @Controller('network')
 export class NetworkController {
 
-    constructor(private readonly oray: NetworkService) {
+    constructor(private readonly oray: NetworkService, private readonly auth: AuthService) {
     }
 
     @GrpcMethod('OrayNetworkService')
     createNetwork() {
-        this.oray.createNetwork();
+        return this.auth.getToken({
+            username: ORAY_USERNAME,
+            password: ORAY_PASSWORD,
+        }).pipe(
+            mergeMap((payload) => this.oray.createNetwork(payload.token))
+        );
     }
 
     @GrpcMethod('OrayNetworkService')
-    listNetworks() {
-        this.oray.createNetwork();
+    listNetworks(user: string) {
+        return this.auth.getToken({
+            username: ORAY_USERNAME,
+            password: ORAY_PASSWORD,
+        }).pipe(
+            mergeMap((payload) => this.oray.listNetworks(payload.token, user))
+        );
     }
 
     @GrpcMethod('OrayNetworkService')
