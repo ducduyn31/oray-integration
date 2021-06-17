@@ -13,6 +13,7 @@ service OrayNetworkService {
     rpc NetworkState (NetworkIdParam) returns (NetworkState);
     rpc ListMembersInNetwork (Empty) returns (Empty);
     rpc ListAllMembers (Empty) returns (Empty);
+    rpc ListAllDisconnectedMembers (Empty) returns (Empty);
     rpc ListDevices (Empty) returns (Empty);
     rpc RemoveMember (Empty) returns (Empty);
     rpc AddMember (Empty) returns (Empty);

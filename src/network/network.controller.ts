@@ -4,6 +4,9 @@ import {NetworkService} from './network.service';
 import {AuthService} from '../auth/auth.service';
 import {Config} from '../config';
 import {mergeMap} from 'rxjs/operators';
+import {Observable} from 'rxjs';
+import {AuthToken} from '../auth/interfaces/auth-token.interface';
+import {ResourceTypes} from '@nestjs/microservices/external/kafka.interface';
 
 const {
     ORAY_USERNAME, ORAY_PASSWORD
@@ -17,47 +20,58 @@ export class NetworkController {
 
     @GrpcMethod('OrayNetworkService')
     createNetwork() {
-        return this.auth.getToken({
-            username: ORAY_USERNAME,
-            password: ORAY_PASSWORD,
-        }).pipe(
+        return this.getToken().pipe(
             mergeMap((payload) => this.oray.createNetwork(payload.token))
         );
     }
 
     @GrpcMethod('OrayNetworkService')
     listNetworks(user: string) {
-        return this.auth.getToken({
-            username: ORAY_USERNAME,
-            password: ORAY_PASSWORD,
-        }).pipe(
+        return this.getToken().pipe(
             mergeMap((payload) => this.oray.listNetworks(payload.token, user))
         );
     }
 
     @GrpcMethod('OrayNetworkService')
-    getNetworkInfo() {
-        this.oray.createNetwork();
+    getNetworkInfo(user: string, network: number) {
+        return this.getToken().pipe(
+            mergeMap((payload) => this.oray.getNetworkInfo(payload.token, user, network)),
+        );
     }
 
     @GrpcMethod('OrayNetworkService')
-    networkState() {
-        this.oray.createNetwork();
+    networkState(user: string, network: number) {
+        return this.getToken().pipe(
+            mergeMap((payload) => this.oray.getNetworkState(payload.token, user, network)),
+        );
     }
 
     @GrpcMethod('OrayNetworkService')
-    listMembersInNetwork() {
-        this.oray.createNetwork();
+    listMembersInNetwork(user: string, network: number) {
+        return this.getToken().pipe(
+            mergeMap((payload) => this.oray.listNetworkMembers(payload.token, user, network)),
+        );
     }
 
     @GrpcMethod('OrayNetworkService')
-    listAllMembers() {
-        this.oray.createNetwork();
+    listAllMembers(user: string) {
+        return this.getToken().pipe(
+            mergeMap((payload) => this.oray.listUserAllNetworkMembers(payload.token, user)),
+        );
     }
 
     @GrpcMethod('OrayNetworkService')
-    listDevices() {
-        this.oray.createNetwork();
+    listAllDisconnectedMembers(user: string) {
+        return this.getToken().pipe(
+            mergeMap((payload) => this.oray.listUserAllNetworkMembers(payload.token, user)),
+        );
+    }
+
+    @GrpcMethod('OrayNetworkService')
+    listDevices(user: string) {
+        return this.getToken().pipe(
+            mergeMap((payload) => this.oray.listUserAllNetworkMembersNotConnected(payload.token, user)),
+        );
     }
 
     @GrpcMethod('OrayNetworkService')
@@ -70,5 +84,10 @@ export class NetworkController {
         this.oray.createNetwork();
     }
 
-
+    private getToken(): Observable<AuthToken> {
+        return this.auth.getToken({
+            username: ORAY_USERNAME,
+            password: ORAY_PASSWORD,
+        });
+    }
 }
