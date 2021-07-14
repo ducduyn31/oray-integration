@@ -3,10 +3,12 @@ import {Cache} from 'cache-manager';
 import {AuthPayload} from './interfaces/auth-payload.interface';
 import {asapScheduler, Observable, of, scheduled} from 'rxjs';
 import {AuthToken} from './interfaces/auth-token.interface';
-import {USER_API_SERVER} from '../config';
+import {Config} from '../config';
 import {map, switchMap, tap} from 'rxjs/operators';
 import {TokenPayload} from './interfaces/token-payload.interface';
 import * as moment from 'moment';
+
+const {USER_API_SERVER} = Config;
 
 @Injectable()
 export class AuthService {

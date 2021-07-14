@@ -6,7 +6,6 @@ import {Config} from '../config';
 import {mergeMap} from 'rxjs/operators';
 import {Observable} from 'rxjs';
 import {AuthToken} from '../auth/interfaces/auth-token.interface';
-import {ResourceTypes} from '@nestjs/microservices/external/kafka.interface';
 
 const {
     ORAY_USERNAME, ORAY_PASSWORD
@@ -24,6 +23,8 @@ export class NetworkController {
             mergeMap((payload) => this.oray.createNetwork(payload.token))
         );
     }
+
+    bindNetwork(networkId: number, user: string) {}
 
     @GrpcMethod('OrayNetworkService')
     listNetworks(user: string) {
@@ -76,11 +77,13 @@ export class NetworkController {
 
     @GrpcMethod('OrayNetworkService')
     removeMember() {
+        // @ts-ignore
         this.oray.createNetwork();
     }
 
     @GrpcMethod('OrayNetworkService')
     addMember() {
+        // @ts-ignore
         this.oray.createNetwork();
     }
 
